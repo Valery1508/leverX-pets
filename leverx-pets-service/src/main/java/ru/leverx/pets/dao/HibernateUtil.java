@@ -26,7 +26,6 @@ public class HibernateUtil {
                 /*settings.put(Environment.USER, ${db_username});   //TODO change to env variables
                 settings.put(Environment.PASS, ${db_password});*/
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL94Dialect");
-
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
                 settings.put(Environment.HBM2DDL_AUTO, "update");
@@ -37,10 +36,8 @@ public class HibernateUtil {
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
-                System.out.println("Hibernate Java Config serviceRegistry created");
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 return sessionFactory;
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

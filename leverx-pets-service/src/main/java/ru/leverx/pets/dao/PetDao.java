@@ -39,17 +39,14 @@ public class PetDao {
         }
     }
 
-    public void deletePet(int id) {
-
+    public void deletePetById(int id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-
             transaction = session.beginTransaction();
 
             Pet pet = session.get(Pet.class, id);
             if (pet != null) {
                 session.delete(pet);
-                System.out.println("Pet is deleted");
             }
 
             transaction.commit();
@@ -61,8 +58,7 @@ public class PetDao {
         }
     }
 
-    public Pet getPet(int id) {
-
+    public Pet getPetById(int id) {
         Transaction transaction = null;
         Pet pet = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
