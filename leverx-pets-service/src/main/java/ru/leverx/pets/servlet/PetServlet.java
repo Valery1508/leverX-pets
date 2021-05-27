@@ -52,7 +52,7 @@ public class PetServlet extends HttpServlet {
                     updateUser(request, response);
                     break;*/
 
-        //resp.setContentType("application/json;charset=UTF-8");
+        resp.setContentType("application/json;charset=UTF-8");
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -72,12 +72,11 @@ public class PetServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter pw = resp.getWriter();
-        //TODO check for existing pet by id
         /*try {
             deletePet(req, resp);
             pw.println("pet was deleted successfully");
         } catch (SQLException throwables) {
-            *//*throwables.printStackTrace();*//*
+            /*throwables.printStackTrace();
             throw new ServletException(throwables);
         }*/
         pw.println(petService.deletePetById(Integer.parseInt(req.getParameter("id"))));
@@ -87,22 +86,6 @@ public class PetServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
     }
-
-    /*private void showNewForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("user-form.jsp");
-        dispatcher.forward(request, response);
-    }
-
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        User existingUser = userDao.getUser(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("user-form.jsp");
-        request.setAttribute("user", existingUser);
-        dispatcher.forward(request, response);
-
-    }*/
 
     private void insertPet(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {

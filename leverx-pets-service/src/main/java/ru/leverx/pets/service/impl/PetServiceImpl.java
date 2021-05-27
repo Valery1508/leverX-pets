@@ -1,8 +1,10 @@
 package ru.leverx.pets.service.impl;
 
 import ru.leverx.pets.dao.PetDao;
+import ru.leverx.pets.dto.PetDto;
 import ru.leverx.pets.entity.Pet;
 import ru.leverx.pets.exception.EntityNotFoundException;
+import ru.leverx.pets.mapper.PetMapper;
 import ru.leverx.pets.service.PetService;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.Objects;
 public class PetServiceImpl implements PetService {
 
     private PetDao petDao;
+    private PetMapper petMapper;
 
     public PetServiceImpl() {
         petDao = new PetDao();
+        petMapper = new PetMapper();
     }
 
     @Override
@@ -22,11 +26,12 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet getPetById(int id) {
+    public PetDto getPetById(int id) {
         if(!checkPetExistence(id)){
             throw new EntityNotFoundException("Pet with id = " + id + " does NOT exist!");
         }
-        return petDao.getPetById(id);
+        Pet pet = petDao.getPetById(id);
+        return petMapper.toDto(pet);
     }
 
     @Override
