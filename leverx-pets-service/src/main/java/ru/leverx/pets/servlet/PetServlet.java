@@ -32,7 +32,7 @@ public class PetServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter pw = resp.getWriter();
         String action = req.getServletPath();
         /*switch (action) {
@@ -70,7 +70,7 @@ public class PetServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter pw = resp.getWriter();
         /*try {
             deletePet(req, resp);
@@ -107,8 +107,7 @@ public class PetServlet extends HttpServlet {
         User user = new User(id, name, email, country);
         userDao.updateUser(user);
         response.sendRedirect("list");
-    }
-*/
+    }*/
 
 
    /////////////////////////

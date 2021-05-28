@@ -1,17 +1,14 @@
 package ru.leverx.pets.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "person", schema = "public")
@@ -29,7 +26,7 @@ public class Person extends BaseEntity {
     private String lastName;
 
     @OneToMany(mappedBy = "person",
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
     //@JsonManagedReference
     private List<Pet> pets = new ArrayList<>();

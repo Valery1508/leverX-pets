@@ -39,7 +39,7 @@ public class PetDao {
         }
     }
 
-    public void deletePetById(int id) {
+    public void deletePetById(long id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
