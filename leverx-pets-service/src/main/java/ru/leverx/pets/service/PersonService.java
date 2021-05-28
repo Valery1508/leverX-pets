@@ -10,9 +10,11 @@ public interface PersonService {
 
     List<PersonResponseDto> getAllPerson();
 
-    List<PersonResponseDto> deletePersonById(int id);
+    List<PersonResponseDto> deletePersonById(long id);
 
     PersonResponseDto addPerson(PersonRequestDto personRequestDto);
+
+    PersonResponseDto updatePerson(long id, PersonRequestDto personRequestDto);
 
     boolean checkPersonExistence(long id);
 }

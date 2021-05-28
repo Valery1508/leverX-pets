@@ -7,6 +7,7 @@ import ru.leverx.pets.dto.PersonRequestDto;
 import ru.leverx.pets.service.PersonService;
 import ru.leverx.pets.service.impl.PersonServiceImpl;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.io.PrintWriter;
 import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
+import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
 
 @WebServlet(name = "PersonServlet", value = "/person")
@@ -40,7 +42,7 @@ public class PersonServlet extends HttpServlet {
 
         if (Objects.nonNull(request.getParameter("id"))) {
             String personByIdJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.getPersonById(parseInt(request.getParameter("id"))));
+                    .writeValueAsString(personService.getPersonById(parseLong(request.getParameter("id"))));
             pw.println(personByIdJSON);
         } else {
             String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
@@ -67,12 +69,28 @@ public class PersonServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PrintWriter pw = resp.getWriter();
-        resp.setContentType(CONTENT_TYPE);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter pw = response.getWriter();
+        response.setContentType(CONTENT_TYPE);
 
         String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(personService.deletePersonById(parseInt(req.getParameter("id"))));
+                .writeValueAsString(personService.deletePersonById(parseLong(request.getParameter("id"))));
         pw.println(allPersonJSON);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter pw = response.getWriter();
+        response.setContentType(CONTENT_TYPE);
+        String requestData = request.getReader().lines().collect(joining());
+
+        JSONObject obj = new JSONObject(requestData);
+        PersonRequestDto personRequestDto = new PersonRequestDto(
+                obj.getString("firstName"),
+                obj.getString("lastName")
+        );
+        String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
+                .writeValueAsString(personService.updatePerson(parseLong(request.getParameter("id")),personRequestDto));
+        pw.println(updatedPersonJSON);
     }
 }

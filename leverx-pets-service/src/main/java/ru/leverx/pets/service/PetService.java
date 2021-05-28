@@ -11,6 +11,8 @@ public interface PetService {
 
     List<PetDto> deletePetById(long id);
 
+    PetDto updatePet(long id, PetDto petDto);
+
     PetDto addPet(PetDto petDto);
 
 }
