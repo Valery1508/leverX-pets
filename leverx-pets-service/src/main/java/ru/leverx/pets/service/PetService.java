@@ -7,8 +7,10 @@ import java.util.List;
 public interface PetService {
     List<PetDto> getAllPets();
 
-    PetDto getPetById(int id);
+    PetDto getPetById(long id);
 
-    List<PetDto> deletePetById(int id);
+    List<PetDto> deletePetById(long id);
+
+    PetDto addPet(PetDto petDto);
 
 }

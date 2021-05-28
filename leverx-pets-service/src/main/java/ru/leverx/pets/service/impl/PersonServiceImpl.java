@@ -36,7 +36,8 @@ public class PersonServiceImpl implements PersonService {
         return toDtos(personDao.getAllPerson());
     }
 
-    private boolean checkPersonExistence(long id) {
+    @Override
+    public boolean checkPersonExistence(long id) {
         return Objects.nonNull(personDao.getPersonById(id));
     }
 

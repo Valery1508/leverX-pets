@@ -6,7 +6,6 @@ import ru.leverx.pets.entity.Pet;
 import ru.leverx.pets.entity.PetType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -35,11 +34,11 @@ public class PetMapper {
         return petDto;
     }
 
-    public List<PetDto> toDtos(List<Pet> pets){
+    public List<PetDto> toDtos(List<Pet> pets) {
         return pets.stream().map(this::toDto).collect(toList());
     }
 
-    public List<Pet> toEntities(List<PetDto> petsDto){
+    public List<Pet> toEntities(List<PetDto> petsDto) {
         return petsDto.stream().map(this::toEntity).collect(toList());
     }
 }

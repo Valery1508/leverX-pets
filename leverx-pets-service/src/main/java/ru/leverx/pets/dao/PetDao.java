@@ -58,7 +58,7 @@ public class PetDao {
         }
     }
 
-    public Pet getPetById(int id) {
+    public Pet getPetById(long id) {
         Transaction transaction = null;
         Pet pet = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
