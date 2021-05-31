@@ -8,27 +8,35 @@ import org.hibernate.service.ServiceRegistry;
 import ru.leverx.pets.entity.Person;
 import ru.leverx.pets.entity.Pet;
 
+import java.io.*;
 import java.util.Properties;
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
+    private static final String PROPERTIES_FILE = "application.properties";
 
-    public static SessionFactory getSessionFactory() {
+    public static SessionFactory getSessionFactory() throws IOException {
+        Properties properties = new Properties();
+        InputStream inputStream = HibernateUtil.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE);
+        if (inputStream != null) {
+            properties.load(inputStream);
+        } else {
+            throw new FileNotFoundException("oh no");
+        }
+
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
 
                 Properties settings = new Properties();
-                settings.put(Environment.DRIVER, "org.postgresql.Driver");
-                settings.put(Environment.URL, "jdbc:postgresql://localhost:5432/Pets");
-                settings.put(Environment.USER, "postgres");
-                settings.put(Environment.PASS, "1508ler");
-                /*settings.put(Environment.USER, ${db_username});   //TODO change to env variables
-                settings.put(Environment.PASS, ${db_password});*/
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL94Dialect");
-                settings.put(Environment.SHOW_SQL, "true");
-                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                settings.put(Environment.HBM2DDL_AUTO, "update");
+                settings.put(Environment.DRIVER, properties.getProperty("db.driver"));
+                settings.put(Environment.URL, properties.getProperty("db.url"));
+                settings.put(Environment.USER, properties.getProperty("db.user"));
+                settings.put(Environment.PASS, properties.getProperty("db.password"));
+                settings.put(Environment.DIALECT, properties.getProperty("db.dialect"));
+                settings.put(Environment.SHOW_SQL, properties.getProperty("db.show_sql"));
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, properties.getProperty("db.current_session_context_class"));
+                settings.put(Environment.HBM2DDL_AUTO, properties.getProperty("db.hbm2ddl_auto"));
 
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(Pet.class);

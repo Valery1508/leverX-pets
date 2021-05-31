@@ -7,7 +7,6 @@ import ru.leverx.pets.dto.PersonRequestDto;
 import ru.leverx.pets.service.PersonService;
 import ru.leverx.pets.service.impl.PersonServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
 
@@ -90,7 +88,7 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("lastName")
         );
         String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(personService.updatePerson(parseLong(request.getParameter("id")),personRequestDto));
+                .writeValueAsString(personService.updatePerson(parseLong(request.getParameter("id")), personRequestDto));
         pw.println(updatedPersonJSON);
     }
 }
