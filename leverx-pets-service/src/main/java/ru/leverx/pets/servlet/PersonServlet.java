@@ -56,7 +56,6 @@ public class PersonServlet extends HttpServlet {
         String requestData = request.getReader().lines().collect(joining());
 
         JSONObject obj = new JSONObject(requestData);
-        //String firstName = obj/*.getJSONObject("firstName")*/.getString("firstName");
         PersonRequestDto personRequestDto = new PersonRequestDto(
                 obj.getString("firstName"),
                 obj.getString("lastName")
