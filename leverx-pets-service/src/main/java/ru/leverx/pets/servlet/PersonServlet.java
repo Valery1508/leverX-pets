@@ -2,11 +2,11 @@ package ru.leverx.pets.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import ru.leverx.pets.dao.PersonDao;
 import ru.leverx.pets.dto.PersonRequestDto;
 import ru.leverx.pets.service.PersonService;
-import ru.leverx.pets.service.impl.PersonServiceImpl;
+import ru.leverx.pets.vallidator.DataValidator;
 
+import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +23,12 @@ public class PersonServlet extends HttpServlet {
 
     private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
 
-    private PersonDao personDao;
     private PersonService personService;
     private ObjectMapper mapper;
 
     public void init() {
-        personDao = new PersonDao();
-        personService = new PersonServiceImpl();
+        ServletContext servletContext = getServletContext();
+        personService = (PersonService) servletContext.getAttribute(PersonService.class.getName());
         mapper = new ObjectMapper();
     }
 
@@ -60,6 +59,9 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("firstName"),
                 obj.getString("lastName")
         );
+
+        DataValidator.validateData(personRequestDto);
+
         String addedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(personService.addPerson(personRequestDto));
         pw.println(addedPersonJSON);
@@ -86,6 +88,9 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("firstName"),
                 obj.getString("lastName")
         );
+
+        DataValidator.validateData(personRequestDto);
+
         String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(personService.updatePerson(parseLong(request.getParameter("id")), personRequestDto));
         pw.println(updatedPersonJSON);

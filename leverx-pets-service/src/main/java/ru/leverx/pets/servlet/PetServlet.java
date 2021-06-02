@@ -2,11 +2,11 @@ package ru.leverx.pets.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
-import ru.leverx.pets.dao.PetDao;
 import ru.leverx.pets.dto.PetDto;
 import ru.leverx.pets.service.PetService;
-import ru.leverx.pets.service.impl.PetServiceImpl;
+import ru.leverx.pets.vallidator.DataValidator;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,13 +25,12 @@ public class PetServlet extends HttpServlet {
 
     private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
 
-    private PetDao petDao;
     private PetService petService;
     private ObjectMapper mapper;
 
     public void init() {
-        petDao = new PetDao();
-        petService = new PetServiceImpl();
+        ServletContext servletContext = getServletContext();
+        petService = (PetService) servletContext.getAttribute(PetService.class.getName());
         mapper = new ObjectMapper();
     }
 
@@ -41,13 +40,10 @@ public class PetServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         if (Objects.nonNull(request.getParameter("id"))) {
-            //pw.println(petService.getPetById(Integer.parseInt(req.getParameter("id"))));
             String petByIdJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.getPetById(parseInt(request.getParameter("id"))));
             pw.println(petByIdJSON);
         } else {
-            //pw.println(getPets(req, resp));
-            //pw.println(petService.getAllPets());
             String allPetsJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.getAllPets());
             pw.println(allPetsJSON);
@@ -56,13 +52,6 @@ public class PetServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        /*try {
-            deletePet(req, resp);
-            pw.println("pet was deleted successfully");
-        } catch (SQLException throwables) {
-            /*throwables.printStackTrace();
-            throw new ServletException(throwables);
-        }*/
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
@@ -72,7 +61,7 @@ public class PetServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
         String requestData = request.getReader().lines().collect(joining());
@@ -83,6 +72,9 @@ public class PetServlet extends HttpServlet {
                 obj.getString("type"),
                 obj.getLong("personId")
         );
+
+        DataValidator.validateData(petDto);
+
         String addedPetJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(petService.addPet(petDto));
         pw.println(addedPetJSON);
@@ -100,6 +92,9 @@ public class PetServlet extends HttpServlet {
                 obj.getString("type"),
                 obj.getLong("personId")
         );
+
+        DataValidator.validateData(petDto);
+
         String updatedPetJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(petService.updatePet(parseLong(request.getParameter("id")), petDto));
         pw.println(updatedPetJSON);

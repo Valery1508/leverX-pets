@@ -9,6 +9,7 @@ import ru.leverx.pets.entity.Person;
 import ru.leverx.pets.entity.Pet;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.Properties;
 
 public class HibernateUtil {
@@ -21,10 +22,10 @@ public class HibernateUtil {
         if (inputStream != null) {
             properties.load(inputStream);
         } else {
-            throw new FileNotFoundException("oh no");
+            throw new FileNotFoundException("oh no, properties file does NOT exist..");
         }
 
-        if (sessionFactory == null) {
+        if (Objects.isNull(sessionFactory)) {
             try {
                 Configuration configuration = new Configuration();
 

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+@Valid
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
@@ -28,6 +30,5 @@ public class Person extends BaseEntity {
     @OneToMany(mappedBy = "person",
             fetch = FetchType.EAGER, orphanRemoval = true)
     @ToString.Exclude
-    //@JsonManagedReference
     private List<Pet> pets = new ArrayList<>();
 }

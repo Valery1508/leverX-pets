@@ -12,9 +12,10 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonRequestDto extends BaseDto {
-    @NotBlank
+
+    @NotBlank(message = "Field cannot be null or empty!")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Field cannot be null or empty!")
     private String lastName;
 }
