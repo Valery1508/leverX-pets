@@ -8,7 +8,6 @@ import ru.leverx.pets.exception.EntityNotFoundException;
 import ru.leverx.pets.mapper.PersonMapper;
 import ru.leverx.pets.service.PersonService;
 
-import javax.servlet.ServletContext;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,14 +15,12 @@ import static java.util.stream.Collectors.toList;
 
 public class PersonServiceImpl implements PersonService {
 
-    private PersonDao personDao;
-    private PersonMapper personMapper;
+    private final PersonDao personDao;
+    private final PersonMapper personMapper;
 
-    public PersonServiceImpl() {
-        personDao = new PersonDao();
-        personMapper = new PersonMapper();
-        /*ServletContext servletContext = getServletContext();
-        personService = (PersonService) servletContext.getAttribute(PersonService.class.getName());*/
+    public PersonServiceImpl(PersonDao personDao, PersonMapper personMapper) {
+        this.personDao = personDao;
+        this.personMapper = personMapper;
     }
 
     @Override

@@ -26,6 +26,7 @@ public class PersonServlet extends HttpServlet {
     private PersonService personService;
     private ObjectMapper mapper;
 
+    @Override
     public void init() {
         ServletContext servletContext = getServletContext();
         personService = (PersonService) servletContext.getAttribute(PersonService.class.getName());

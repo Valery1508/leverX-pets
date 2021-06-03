@@ -22,7 +22,7 @@ public class HibernateUtil {
         if (inputStream != null) {
             properties.load(inputStream);
         } else {
-            throw new FileNotFoundException("oh no, properties file does NOT exist..");
+            throw new FileNotFoundException("oh no, Properties File does NOT exist..");
         }
 
         if (Objects.isNull(sessionFactory)) {
@@ -48,7 +48,7 @@ public class HibernateUtil {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 return sessionFactory;
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace();    //TODO throw exception
             }
         }
         return sessionFactory;

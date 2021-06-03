@@ -7,7 +7,6 @@ import ru.leverx.pets.service.PetService;
 import ru.leverx.pets.vallidator.DataValidator;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
 
-@WebServlet("/pets")     //либо аннотация, либо в web.xml
+@WebServlet("/pets")
 public class PetServlet extends HttpServlet {
 
     private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
@@ -28,6 +27,7 @@ public class PetServlet extends HttpServlet {
     private PetService petService;
     private ObjectMapper mapper;
 
+    @Override
     public void init() {
         ServletContext servletContext = getServletContext();
         petService = (PetService) servletContext.getAttribute(PetService.class.getName());

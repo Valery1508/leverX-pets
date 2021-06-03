@@ -15,14 +15,14 @@ import static java.util.stream.Collectors.toList;
 
 public class PetServiceImpl implements PetService {
 
-    private PetDao petDao;
-    private PetMapper petMapper;
-    private PersonService personService;
+    private final PetDao petDao;
+    private final PetMapper petMapper;
+    private final PersonService personService;
 
-    public PetServiceImpl() {
-        petDao = new PetDao();
-        petMapper = new PetMapper();
-        personService = new PersonServiceImpl();
+    public PetServiceImpl(PetDao petDao, PetMapper petMapper, PersonService personService) {
+        this.petDao = petDao;
+        this.petMapper = petMapper;
+        this.personService = personService;
     }
 
     @Override
