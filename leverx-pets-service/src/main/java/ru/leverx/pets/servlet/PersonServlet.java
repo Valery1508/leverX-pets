@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
 import static ru.leverx.pets.vallidator.DataValidator.validateData;
 
-@WebServlet(name = "PersonServlet", value = "/person/*")
+@WebServlet(name = "PersonServlet", value = "/person/*")    //http://localhost:8080/person
 public class PersonServlet extends HttpServlet {
 
     private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
@@ -36,7 +36,6 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String parsedUrl = getParsedUrl(request);
 
         PrintWriter pw = response.getWriter();
@@ -51,16 +50,6 @@ public class PersonServlet extends HttpServlet {
                     .writeValueAsString(personService.getAllPerson());
             pw.println(allPersonJSON);
         }
-
-        /*if (Objects.nonNull(request.getParameter("id"))) {
-            String personByIdJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.getPersonById(parseLong(request.getParameter("id"))));
-            pw.println(personByIdJSON);
-        } else {
-            String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.getAllPerson());
-            pw.println(allPersonJSON);
-        }*/
     }
 
     @Override
@@ -74,7 +63,6 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("firstName"),
                 obj.getString("lastName")
         );
-
         validateData(personRequestDto);
 
         String addedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
@@ -84,30 +72,46 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String parsedUrl = getParsedUrl(request);
+
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
-        String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(personService.deletePersonById(parseLong(request.getParameter("id"))));
-        pw.println(allPersonJSON);
+        if (Objects.nonNull(parsedUrl)) {
+            String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(personService.deletePersonById(parseLong(parsedUrl)));
+            pw.println(allPersonJSON);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            pw.println("");
+            //throw new error;
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String parsedUrl = getParsedUrl(request);
+
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
-        String requestData = request.getReader().lines().collect(joining());
 
-        JSONObject obj = new JSONObject(requestData);
-        PersonRequestDto personRequestDto = new PersonRequestDto(
-                obj.getString("firstName"),
-                obj.getString("lastName")
-        );
+        if (Objects.nonNull(parsedUrl)){
+            String requestData = request.getReader().lines().collect(joining());
+            JSONObject obj = new JSONObject(requestData);
+            PersonRequestDto personRequestDto = new PersonRequestDto(
+                    obj.getString("firstName"),
+                    obj.getString("lastName")
+            );
+            validateData(personRequestDto);
 
-        validateData(personRequestDto);
+            String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(personService.updatePerson(parseLong(parsedUrl), personRequestDto));
+            pw.println(updatedPersonJSON);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            pw.println("");
+            //throw new error;
+        }
 
-        String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(personService.updatePerson(parseLong(request.getParameter("id")), personRequestDto));
-        pw.println(updatedPersonJSON);
     }
 }

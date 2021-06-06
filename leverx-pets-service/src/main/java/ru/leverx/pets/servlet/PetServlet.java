@@ -3,7 +3,6 @@ package ru.leverx.pets.servlet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import ru.leverx.pets.dto.PetDto;
-import ru.leverx.pets.parser.UrlParser;
 import ru.leverx.pets.service.PetService;
 
 import javax.servlet.ServletContext;
@@ -21,7 +20,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
 import static ru.leverx.pets.vallidator.DataValidator.validateData;
 
-@WebServlet("/pets/*")
+@WebServlet(name = "PetServlet", value = "/pets/*")  //http://localhost:8080/pets
 public class PetServlet extends HttpServlet {
 
     private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
@@ -38,7 +37,6 @@ public class PetServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String parsedUrl = getParsedUrl(request);
 
         PrintWriter pw = response.getWriter();
@@ -67,12 +65,20 @@ public class PetServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String parsedUrl = getParsedUrl(request);
+
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
-        String allPetJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(petService.deletePetById(parseInt(request.getParameter("id"))));
-        pw.println(allPetJSON);
+        if (Objects.nonNull(parsedUrl)) {
+            String allPetJSON = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(petService.deletePetById(parseInt(parsedUrl)));
+            pw.println(allPetJSON);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            pw.println("");
+            //throw new error;
+        }
     }
 
     @Override
@@ -87,7 +93,6 @@ public class PetServlet extends HttpServlet {
                 obj.getString("type"),
                 obj.getLong("personId")
         );
-
         validateData(petDto);
 
         String addedPetJSON = mapper.writerWithDefaultPrettyPrinter()
@@ -97,25 +102,28 @@ public class PetServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String parsedUrl = getParsedUrl(request);
+
         PrintWriter pw = response.getWriter();
         response.setContentType(CONTENT_TYPE);
-        String requestData = request.getReader().lines().collect(joining());
 
-        JSONObject obj = new JSONObject(requestData);
-        PetDto petDto = new PetDto(
-                obj.getString("name"),
-                obj.getString("type"),
-                obj.getLong("personId")
-        );
+        if (Objects.nonNull(parsedUrl)) {
+            String requestData = request.getReader().lines().collect(joining());
+            JSONObject obj = new JSONObject(requestData);
+            PetDto petDto = new PetDto(
+                    obj.getString("name"),
+                    obj.getString("type"),
+                    obj.getLong("personId")
+            );
+            validateData(petDto);
 
-        validateData(petDto);
-
-        String updatedPetJSON = mapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(petService.updatePet(parseLong(request.getParameter("id")), petDto));
-        pw.println(updatedPetJSON);
-    }
-
-    public void parser() {
-
+            String updatedPetJSON = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(petService.updatePet(parseLong(parsedUrl), petDto));
+            pw.println(updatedPetJSON);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            pw.println("");
+            //throw new error;
+        }
     }
 }

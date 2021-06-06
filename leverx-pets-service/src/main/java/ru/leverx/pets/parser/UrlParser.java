@@ -4,16 +4,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class UrlParser {
-    private final String SLASH = "/";
 
     public static String getParsedUrl(HttpServletRequest request) {
-        String stroka1 = request.getPathInfo(); // "/4"
+        String requestData = request.getPathInfo();
 
         String result;
-        if (Objects.isNull(stroka1) || stroka1.isEmpty()) {
+        if (Objects.isNull(requestData) || requestData.isEmpty()) {
             return null;
         } else {
-            result = stroka1.substring(1);
+            result = requestData.substring(1);
         }
         return result;
     }

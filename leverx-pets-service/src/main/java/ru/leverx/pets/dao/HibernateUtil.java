@@ -1,5 +1,6 @@
 package ru.leverx.pets.dao;
 
+import org.hibernate.SessionException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -8,7 +9,9 @@ import org.hibernate.service.ServiceRegistry;
 import ru.leverx.pets.entity.Person;
 import ru.leverx.pets.entity.Pet;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -48,7 +51,7 @@ public class HibernateUtil {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 return sessionFactory;
             } catch (Exception e) {
-                e.printStackTrace();    //TODO throw exception
+                throw new SessionException("Session exception");
             }
         }
         return sessionFactory;
