@@ -15,9 +15,10 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
+import static ru.leverx.pets.Constants.*;
+
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
-    private static final String PROPERTIES_FILE = "application.properties";
 
     public static SessionFactory getSessionFactory() throws IOException {
         Properties properties = new Properties();
@@ -25,7 +26,7 @@ public class HibernateUtil {
         if (inputStream != null) {
             properties.load(inputStream);
         } else {
-            throw new FileNotFoundException("oh no, Properties File does NOT exist..");
+            throw new FileNotFoundException(FILE_NOT_FOUND_MESSAGE);
         }
 
         if (Objects.isNull(sessionFactory)) {
@@ -51,7 +52,7 @@ public class HibernateUtil {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 return sessionFactory;
             } catch (Exception e) {
-                throw new SessionException("Session exception");
+                throw new SessionException(SESSION_MESSAGE);
             }
         }
         return sessionFactory;

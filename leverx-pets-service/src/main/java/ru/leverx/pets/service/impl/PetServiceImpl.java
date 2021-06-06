@@ -33,7 +33,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDto getPetById(long id) {
         if (!checkPetExistence(id)) {
-            throw new EntityNotFoundException("Pet with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         }
         Pet pet = petDao.getPetById(id);
         return petMapper.toDto(pet);
@@ -44,7 +44,7 @@ public class PetServiceImpl implements PetService {
         if (checkPetExistence(id)) {
             petDao.deletePetById(id);
         } else {
-            throw new EntityNotFoundException("Pet with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         }
         return getAllPets();
     }
@@ -52,9 +52,9 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDto updatePet(long id, PetDto petDto) {
         if (!checkPetExistence(id)) {
-            throw new EntityNotFoundException("Pet with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         } else if (!personService.checkPersonExistence(petDto.getPersonId())) {
-            throw new EntityNotFoundException("Person with id = " + petDto.getPersonId() + " does NOT exist!");
+            throw new EntityNotFoundException(petDto.getPersonId());
         }
         petDto.setId(id);
         Pet pet = petMapper.toEntity(petDto);
@@ -65,7 +65,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDto addPet(PetDto petDto) {
         if (!personService.checkPersonExistence(petDto.getPersonId())) {
-            throw new EntityNotFoundException("Person with id = " + petDto.getPersonId() + " does NOT exist!");
+            throw new EntityNotFoundException(petDto.getPersonId());
         }
         Pet pet = petMapper.toEntity(petDto);
         petDao.savePet(pet);
@@ -77,6 +77,6 @@ public class PetServiceImpl implements PetService {
     }
 
     private List<PetDto> toDtos(List<Pet> pets) {
-        return pets.stream().map(pet -> petMapper.toDto(pet)).collect(toList());
+        return pets.stream().map(petMapper::toDto).collect(toList());
     }
 }

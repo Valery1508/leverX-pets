@@ -18,12 +18,12 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
+import static ru.leverx.pets.Constants.CONTENT_TYPE;
+import static ru.leverx.pets.Constants.WRONG_PATH_MESSAGE;
 import static ru.leverx.pets.vallidator.DataValidator.validateData;
 
 @WebServlet(name = "PetServlet", value = "/pets/*")  //http://localhost:8080/pets
 public class PetServlet extends HttpServlet {
-
-    private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
 
     private PetService petService;
     private ObjectMapper mapper;
@@ -39,17 +39,17 @@ public class PetServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType("application/json;charset=UTF-8");
 
         if (Objects.nonNull(parsedUrl)) {
             String petByIdJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.getPetById(parseInt(parsedUrl)));
-            pw.println(petByIdJSON);
+            out.println(petByIdJSON);
         } else {
             String allPetsJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.getAllPets());
-            pw.println(allPetsJSON);
+            out.println(allPetsJSON);
         }
 
         /*if (Objects.nonNull(request.getParameter("id"))) {
@@ -67,23 +67,21 @@ public class PetServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)) {
             String allPetJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.deletePetById(parseInt(parsedUrl)));
-            pw.println(allPetJSON);
+            out.println(allPetJSON);
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            pw.println("");
-            //throw new error;
+            response.sendError(400, WRONG_PATH_MESSAGE);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
         String requestData = request.getReader().lines().collect(joining());
 
@@ -97,14 +95,14 @@ public class PetServlet extends HttpServlet {
 
         String addedPetJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(petService.addPet(petDto));
-        pw.println(addedPetJSON);
+        out.println(addedPetJSON);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)) {
@@ -119,11 +117,9 @@ public class PetServlet extends HttpServlet {
 
             String updatedPetJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(petService.updatePet(parseLong(parsedUrl), petDto));
-            pw.println(updatedPetJSON);
+            out.println(updatedPetJSON);
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            pw.println("");
-            //throw new error;
+            response.sendError(400, WRONG_PATH_MESSAGE);
         }
     }
 }

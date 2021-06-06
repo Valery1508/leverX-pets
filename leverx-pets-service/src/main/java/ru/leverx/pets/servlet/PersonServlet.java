@@ -16,13 +16,13 @@ import java.util.Objects;
 
 import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
+import static ru.leverx.pets.Constants.CONTENT_TYPE;
+import static ru.leverx.pets.Constants.WRONG_PATH_MESSAGE;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
 import static ru.leverx.pets.vallidator.DataValidator.validateData;
 
 @WebServlet(name = "PersonServlet", value = "/person/*")    //http://localhost:8080/person
 public class PersonServlet extends HttpServlet {
-
-    private final static String CONTENT_TYPE = "application/json;charset=UTF-8";
 
     private PersonService personService;
     private ObjectMapper mapper;
@@ -38,23 +38,23 @@ public class PersonServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)) {
             String personByIdJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(personService.getPersonById(parseLong(parsedUrl)));
-            pw.println(personByIdJSON);
+            out.println(personByIdJSON);
         } else {
             String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(personService.getAllPerson());
-            pw.println(allPersonJSON);
+            out.println(allPersonJSON);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
         String requestData = request.getReader().lines().collect(joining());
 
@@ -67,24 +67,22 @@ public class PersonServlet extends HttpServlet {
 
         String addedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                 .writeValueAsString(personService.addPerson(personRequestDto));
-        pw.println(addedPersonJSON);
+        out.println(addedPersonJSON);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)) {
             String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(personService.deletePersonById(parseLong(parsedUrl)));
-            pw.println(allPersonJSON);
+            out.println(allPersonJSON);
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            pw.println("");
-            //throw new error;
+            response.sendError(400, WRONG_PATH_MESSAGE);
         }
     }
 
@@ -92,7 +90,7 @@ public class PersonServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String parsedUrl = getParsedUrl(request);
 
-        PrintWriter pw = response.getWriter();
+        PrintWriter out = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)){
@@ -106,12 +104,9 @@ public class PersonServlet extends HttpServlet {
 
             String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
                     .writeValueAsString(personService.updatePerson(parseLong(parsedUrl), personRequestDto));
-            pw.println(updatedPersonJSON);
+            out.println(updatedPersonJSON);
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            pw.println("");
-            //throw new error;
+            response.sendError(400, WRONG_PATH_MESSAGE);
         }
-
     }
 }

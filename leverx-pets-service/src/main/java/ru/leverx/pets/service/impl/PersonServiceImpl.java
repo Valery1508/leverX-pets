@@ -26,7 +26,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonResponseDto getPersonById(long id) {
         if (!checkPersonExistence(id)) {
-            throw new EntityNotFoundException("Person with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         }
         return personMapper.toDto(personDao.getPersonById(id));
     }
@@ -46,7 +46,7 @@ public class PersonServiceImpl implements PersonService {
         if (checkPersonExistence(id)) {
             personDao.deletePersonById(id);
         } else {
-            throw new EntityNotFoundException("Person with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         }
         return getAllPerson();
     }
@@ -61,7 +61,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonResponseDto updatePerson(long id, PersonRequestDto personRequestDto) {
         if (!checkPersonExistence(id)) {
-            throw new EntityNotFoundException("Person with id = " + id + " does NOT exist!");
+            throw new EntityNotFoundException(id);
         }
         personRequestDto.setId(id);
         Person person = personMapper.toEntity(personRequestDto);
@@ -70,6 +70,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private List<PersonResponseDto> toDtos(List<Person> persons) {
-        return persons.stream().map(person -> personMapper.toDto(person)).collect(toList());
+        return persons.stream().map(personMapper::toDto).collect(toList());
     }
 }
