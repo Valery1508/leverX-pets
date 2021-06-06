@@ -74,7 +74,7 @@ public class PetDao {
         return pet;
     }
 
-    @SuppressWarnings("unchecked")  //TODO what?
+    @SuppressWarnings("unchecked")
     public List<Pet> getAllPets() {
 
         Transaction transaction = null;

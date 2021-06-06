@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.leverx.pets.Constants.CONTENT_TYPE;
 import static ru.leverx.pets.Constants.WRONG_PATH_MESSAGE;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
-import static ru.leverx.pets.vallidator.DataValidator.validateData;
+import static ru.leverx.pets.validator.DataValidator.validateData;
 
 @WebServlet(name = "PersonServlet", value = "/person/*")    //http://localhost:8080/person
 public class PersonServlet extends HttpServlet {

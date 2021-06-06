@@ -19,7 +19,6 @@ public class PersonMapper {
         person.setId(personDto.getId());
         person.setFirstName(personDto.getFirstName());
         person.setLastName(personDto.getLastName());
-        //person.setPets(petMapper.toEntities(personDto.getPets()));
         return person;
     }
 

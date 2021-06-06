@@ -1,4 +1,4 @@
-package ru.leverx.pets.vallidator;
+package ru.leverx.pets.validator;
 
 import javax.validation.*;
 import java.util.Set;

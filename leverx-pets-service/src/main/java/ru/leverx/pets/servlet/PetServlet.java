@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
 import static ru.leverx.pets.Constants.CONTENT_TYPE;
 import static ru.leverx.pets.Constants.WRONG_PATH_MESSAGE;
-import static ru.leverx.pets.vallidator.DataValidator.validateData;
+import static ru.leverx.pets.validator.DataValidator.validateData;
 
 @WebServlet(name = "PetServlet", value = "/pets/*")  //http://localhost:8080/pets
 public class PetServlet extends HttpServlet {
@@ -40,7 +40,7 @@ public class PetServlet extends HttpServlet {
         String parsedUrl = getParsedUrl(request);
 
         PrintWriter out = response.getWriter();
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType(CONTENT_TYPE);
 
         if (Objects.nonNull(parsedUrl)) {
             String petByIdJSON = mapper.writerWithDefaultPrettyPrinter()
