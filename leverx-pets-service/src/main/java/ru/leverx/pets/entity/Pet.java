@@ -3,10 +3,12 @@ package ru.leverx.pets.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "pet", schema = "public")
@@ -25,11 +27,5 @@ public class Pet extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "person_id")
-    //@JsonBackReference
     private Person person;
-
-    public Pet(String name, PetType type) {
-        this.name = name;
-        this.type = type;
-    }
 }
