@@ -51,16 +51,6 @@ public class PetServlet extends HttpServlet {
                     .writeValueAsString(petService.getAllPets());
             out.println(allPetsJSON);
         }
-
-        /*if (Objects.nonNull(request.getParameter("id"))) {
-            String petByIdJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(petService.getPetById(parseInt(request.getParameter("id"))));
-            pw.println(petByIdJSON);
-        } else {
-            String allPetsJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(petService.getAllPets());
-            pw.println(allPetsJSON);
-        }*/
     }
 
     @Override
