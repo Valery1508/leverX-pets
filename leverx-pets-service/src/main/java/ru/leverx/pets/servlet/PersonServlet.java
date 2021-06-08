@@ -1,9 +1,12 @@
 package ru.leverx.pets.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.json.JSONObject;
 import ru.leverx.pets.dto.PersonRequestDto;
+import ru.leverx.pets.parser.UrlCase;
 import ru.leverx.pets.service.PersonService;
+import ru.leverx.pets.validator.DataValidator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -12,49 +15,48 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Objects;
+import java.util.List;
 
 import static java.lang.Long.parseLong;
 import static java.util.stream.Collectors.joining;
-import static ru.leverx.pets.Constants.CONTENT_TYPE;
-import static ru.leverx.pets.Constants.WRONG_PATH_MESSAGE;
-import static ru.leverx.pets.parser.UrlParser.getParsedUrl;
-import static ru.leverx.pets.validator.DataValidator.validateData;
+import static ru.leverx.pets.exception.ExceptionMessages.WRONG_PATH_MESSAGE;
+import static ru.leverx.pets.parser.UrlParser.parseUrl;
+import static ru.leverx.pets.utils.Constants.CONTENT_TYPE;
 
-@WebServlet(name = "PersonServlet", value = "/person/*")    //http://localhost:8080/person
+@WebServlet(name = "PersonServlet", value = "/person/*")
 public class PersonServlet extends HttpServlet {
 
     private PersonService personService;
-    private ObjectMapper mapper;
+    private ObjectWriter writer;
 
     @Override
     public void init() {
         ServletContext servletContext = getServletContext();
         personService = (PersonService) servletContext.getAttribute(PersonService.class.getName());
-        mapper = new ObjectMapper();
+        writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String parsedUrl = getParsedUrl(request);
+        List<String> parsedUrl = parseUrl(request);
 
-        PrintWriter out = response.getWriter();
+        PrintWriter responseBody = response.getWriter();  //TODO
         response.setContentType(CONTENT_TYPE);
 
-        if (Objects.nonNull(parsedUrl)) {
-            String personByIdJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.getPersonById(parseLong(parsedUrl)));
-            out.println(personByIdJSON);
-        } else {
-            String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
+        if (parsedUrl.get(0).equals(UrlCase.ID.toString())) {
+            String personByIdJSON = writer
+                    .writeValueAsString(personService.getPersonById(parseLong(parsedUrl.get(1))));
+            responseBody.println(personByIdJSON);
+        } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {
+            String allPersonJSON = writer
                     .writeValueAsString(personService.getAllPerson());
-            out.println(allPersonJSON);
+            responseBody.println(allPersonJSON);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter out = response.getWriter();
+        PrintWriter responseBody = response.getWriter();
         response.setContentType(CONTENT_TYPE);
         String requestData = request.getReader().lines().collect(joining());
 
@@ -63,24 +65,23 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("firstName"),
                 obj.getString("lastName")
         );
-        validateData(personRequestDto);
+        DataValidator.validateData(personRequestDto);
 
-        String addedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
+        String addedPersonJSON = writer
                 .writeValueAsString(personService.addPerson(personRequestDto));
-        out.println(addedPersonJSON);
+        responseBody.println(addedPersonJSON);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String parsedUrl = getParsedUrl(request);
+        List<String> parsedUrl = parseUrl(request);
 
-        PrintWriter out = response.getWriter();
+        PrintWriter responseBody = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
-        if (Objects.nonNull(parsedUrl)) {
-            String allPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.deletePersonById(parseLong(parsedUrl)));
-            out.println(allPersonJSON);
+        if (parsedUrl.get(0).equals(UrlCase.ID.toString())) {
+            personService.deletePersonById(parseLong(parsedUrl.get(1)));
+            responseBody.println("Person with id = " + parsedUrl.get(1) + " was deleted.");
         } else {
             response.sendError(400, WRONG_PATH_MESSAGE);
         }
@@ -88,24 +89,29 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String parsedUrl = getParsedUrl(request);
+        List<String> parsedUrl = parseUrl(request);
 
-        PrintWriter out = response.getWriter();
+        PrintWriter responseBody = response.getWriter();
         response.setContentType(CONTENT_TYPE);
 
-        if (Objects.nonNull(parsedUrl)){
-            String requestData = request.getReader().lines().collect(joining());
+        if (parsedUrl.get(0).equals(UrlCase.ID.toString())) {
+            String requestData = request
+                    .getReader()
+                    .lines()
+                    .collect(joining());
+
             JSONObject obj = new JSONObject(requestData);
+
             PersonRequestDto personRequestDto = new PersonRequestDto(
                     obj.getString("firstName"),
                     obj.getString("lastName")
             );
-            validateData(personRequestDto);
+            DataValidator.validateData(personRequestDto);
 
-            String updatedPersonJSON = mapper.writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(personService.updatePerson(parseLong(parsedUrl), personRequestDto));
-            out.println(updatedPersonJSON);
-        } else {
+            String updatedPersonJSON = writer
+                    .writeValueAsString(personService.updatePerson(parseLong(parsedUrl.get(1)), personRequestDto));
+            responseBody.println(updatedPersonJSON);
+        } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {
             response.sendError(400, WRONG_PATH_MESSAGE);
         }
     }

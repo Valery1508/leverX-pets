@@ -2,20 +2,21 @@ package ru.leverx.pets.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import static ru.leverx.pets.Constants.NULL_FIELD_MESSAGE;
-import static ru.leverx.pets.Constants.NULL_OR_EMPTY_FIELD_MESSAGE;
+import static ru.leverx.pets.exception.ExceptionMessages.NULL_FIELD_MESSAGE;
+import static ru.leverx.pets.exception.ExceptionMessages.NULL_OR_EMPTY_FIELD_MESSAGE;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PetDto extends BaseDto {
+public class PetDto {
+
+    protected Long id;
+
     @NotBlank(message = NULL_OR_EMPTY_FIELD_MESSAGE)
     private String name;
 
@@ -24,4 +25,10 @@ public class PetDto extends BaseDto {
 
     @NotNull(message = NULL_FIELD_MESSAGE)
     private long personId;
+
+    public PetDto(String name, String type, long personId) {
+        this.name = name;
+        this.type = type;
+        this.personId = personId;
+    }
 }

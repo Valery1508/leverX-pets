@@ -10,7 +10,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class PetMapper {
-    private PersonDao personDao;
+    private final PersonDao personDao;
 
     public PetMapper() {
         personDao = new PersonDao();

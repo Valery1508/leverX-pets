@@ -2,7 +2,10 @@ package ru.leverx.pets.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -10,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Valid
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "person", schema = "public")
@@ -19,7 +21,11 @@ import java.util.List;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Person extends BaseEntity {
+public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long id;
 
     @Column(name = "first_name")
     private String firstName;

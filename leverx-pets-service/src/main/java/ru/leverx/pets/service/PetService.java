@@ -9,7 +9,7 @@ public interface PetService {
 
     PetDto getPetById(long id);
 
-    List<PetDto> deletePetById(long id);
+    void deletePetById(long id);
 
     PetDto updatePet(long id, PetDto petDto);
 

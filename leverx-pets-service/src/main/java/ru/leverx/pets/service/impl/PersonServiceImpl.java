@@ -11,6 +11,11 @@ import ru.leverx.pets.service.PersonService;
 import java.util.List;
 import java.util.Objects;
 
+//TODO
+/*create, update - entity
+* delete - void
+* getById - optional*/
+
 import static java.util.stream.Collectors.toList;
 
 public class PersonServiceImpl implements PersonService {
@@ -42,13 +47,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public List<PersonResponseDto> deletePersonById(long id) {
+    public void deletePersonById(long id) {
         if (checkPersonExistence(id)) {
             personDao.deletePersonById(id);
         } else {
             throw new EntityNotFoundException(id);
         }
-        return getAllPerson();
     }
 
     @Override

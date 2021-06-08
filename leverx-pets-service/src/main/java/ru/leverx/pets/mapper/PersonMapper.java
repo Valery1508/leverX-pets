@@ -1,16 +1,13 @@
 package ru.leverx.pets.mapper;
 
-import ru.leverx.pets.dao.PetDao;
 import ru.leverx.pets.dto.PersonRequestDto;
 import ru.leverx.pets.dto.PersonResponseDto;
 import ru.leverx.pets.entity.Person;
 
 public class PersonMapper {
-    private PetDao petDao;
-    private PetMapper petMapper;
+    private final PetMapper petMapper;
 
     public PersonMapper() {
-        petDao = new PetDao();
         petMapper = new PetMapper();
     }
 

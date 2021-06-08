@@ -40,13 +40,12 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<PetDto> deletePetById(long id) {
+    public void deletePetById(long id) {
         if (checkPetExistence(id)) {
             petDao.deletePetById(id);
         } else {
             throw new EntityNotFoundException(id);
         }
-        return getAllPets();
     }
 
     @Override
