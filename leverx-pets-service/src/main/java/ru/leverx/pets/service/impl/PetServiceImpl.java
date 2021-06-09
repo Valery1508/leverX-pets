@@ -10,14 +10,15 @@ import ru.leverx.pets.service.PetService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
 public class PetServiceImpl implements PetService {
 
-    private final PetDao petDao;
     private final PetMapper petMapper;
     private final PersonService personService;
+    private final PetDao petDao;
 
     public PetServiceImpl(PetDao petDao, PetMapper petMapper, PersonService personService) {
         this.petDao = petDao;
@@ -35,8 +36,7 @@ public class PetServiceImpl implements PetService {
         if (!checkPetExistence(id)) {
             throw new EntityNotFoundException(id);
         }
-        Pet pet = petDao.getPetById(id);
-        return petMapper.toDto(pet);
+        return petMapper.toDto(petDao.getPetById(id));
     }
 
     @Override
@@ -58,6 +58,7 @@ public class PetServiceImpl implements PetService {
         petDto.setId(id);
         Pet pet = petMapper.toEntity(petDto);
         petDao.updatePet(pet);
+        //petDao.action(pet, (pet1, session)-> (Pet) session.update(pet));
         return getPetById(pet.getId());
     }
 
@@ -68,6 +69,7 @@ public class PetServiceImpl implements PetService {
         }
         Pet pet = petMapper.toEntity(petDto);
         petDao.savePet(pet);
+        //petDao.action(pet, (pet1, session) -> (Pet) session.save(pet));
         return getPetById(pet.getId());
     }
 

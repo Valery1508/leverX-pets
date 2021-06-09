@@ -13,8 +13,8 @@ import java.util.Objects;
 
 //TODO
 /*create, update - entity
-* delete - void
-* getById - optional*/
+ * delete - void
+ * getById - optional*/
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,7 +22,6 @@ public class PersonServiceImpl implements PersonService {
 
     private final PersonDao personDao;
     private final PersonMapper personMapper;
-
     public PersonServiceImpl(PersonDao personDao, PersonMapper personMapper) {
         this.personDao = personDao;
         this.personMapper = personMapper;
@@ -58,8 +57,8 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonResponseDto addPerson(PersonRequestDto personRequestDto) {
         Person person = personMapper.toEntity(personRequestDto);
-        personDao.savePerson(person);
-        return getPersonById(person.getId());
+        Person savedPerson = personDao.savePerson(person);
+        return getPersonById(savedPerson.getId());
     }
 
     @Override
@@ -74,6 +73,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     private List<PersonResponseDto> toDtos(List<Person> persons) {
-        return persons.stream().map(personMapper::toDto).collect(toList());
+        return persons.stream()
+                .map(personMapper::toDto)
+                .collect(toList());
     }
 }
