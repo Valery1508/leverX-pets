@@ -6,16 +6,15 @@ import ru.leverx.pets.entity.Pet;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 public class PetDao {
 
     public void savePet(Pet pet) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // start a transaction
             transaction = session.beginTransaction();
-            // save the student object
             session.save(pet);
-            // commit transaction
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -58,7 +57,7 @@ public class PetDao {
         }
     }
 
-    public Pet getPetById(long id) {
+    public /*Optional*/Pet getPetById(long id) {
         Transaction transaction = null;
         Pet pet = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -78,7 +77,7 @@ public class PetDao {
     public List<Pet> getAllPets() {
 
         Transaction transaction = null;
-        List<Pet> pets = null;
+        List<Pet> pets = emptyList();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             pets = session.createQuery("from Pet").getResultList();

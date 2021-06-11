@@ -8,6 +8,8 @@ import ru.leverx.pets.exception.EntityNotFoundException;
 import ru.leverx.pets.mapper.PersonMapper;
 import ru.leverx.pets.service.PersonService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +22,9 @@ import static java.util.stream.Collectors.toList;
 
 public class PersonServiceImpl implements PersonService {
 
+    /*@PersistenceContext
+    private EntityManager entityManager;*/
+    ///////////////
     private final PersonDao personDao;
     private final PersonMapper personMapper;
     public PersonServiceImpl(PersonDao personDao, PersonMapper personMapper) {
