@@ -6,6 +6,7 @@ import ru.leverx.pets.entity.Pet;
 import ru.leverx.pets.entity.PetType;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -21,7 +22,7 @@ public class PetMapper {
         pet.setId(petDto.getId());
         pet.setName(petDto.getName());
         pet.setType(PetType.valueOf(petDto.getType()));
-        pet.setPerson(personDao.getPersonById(petDto.getPersonId()));
+        pet.setPerson(personDao.getPersonById(petDto.getPersonId()).get());
         return pet;
     }
 

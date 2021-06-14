@@ -8,25 +8,16 @@ import ru.leverx.pets.exception.EntityNotFoundException;
 import ru.leverx.pets.mapper.PersonMapper;
 import ru.leverx.pets.service.PersonService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Objects;
-
-//TODO
-/*create, update - entity
- * delete - void
- * getById - optional*/
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 public class PersonServiceImpl implements PersonService {
 
-    /*@PersistenceContext
-    private EntityManager entityManager;*/
-    ///////////////
     private final PersonDao personDao;
     private final PersonMapper personMapper;
+
     public PersonServiceImpl(PersonDao personDao, PersonMapper personMapper) {
         this.personDao = personDao;
         this.personMapper = personMapper;
@@ -34,10 +25,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonResponseDto getPersonById(long id) {
-        if (!checkPersonExistence(id)) {
-            throw new EntityNotFoundException(id);
-        }
-        return personMapper.toDto(personDao.getPersonById(id));
+        return personMapper.toDto(personDao.getPersonById(id).get());
     }
 
     @Override
@@ -47,7 +35,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public boolean checkPersonExistence(long id) {
-        return Objects.nonNull(personDao.getPersonById(id));
+        return isNotEmpty(personDao.getPersonById(id));
     }
 
     @Override

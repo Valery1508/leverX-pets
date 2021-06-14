@@ -5,8 +5,8 @@ import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static ru.leverx.pets.exception.ExceptionMessages.SESSION_MESSAGE;
 
 public class HibernateUtil {
@@ -14,7 +14,7 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
 
-        if (Objects.isNull(sessionFactory)) {
+        if (isNull(sessionFactory)) {
             try {
                 return loadSessionFactory();
             } catch (Exception e) {

@@ -12,7 +12,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@Valid
 @Data
 @Entity
 @Table(name = "person", schema = "public")
