@@ -2,9 +2,9 @@ package ru.leverx.pets.servlet;
 
 import org.json.JSONObject;
 import ru.leverx.pets.dto.PersonRequestDto;
+import ru.leverx.pets.dto.PersonResponseDto;
 import ru.leverx.pets.parser.UrlCase;
 import ru.leverx.pets.service.PersonService;
-import ru.leverx.pets.validator.DataValidator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -17,9 +17,15 @@ import java.util.List;
 import static java.lang.Long.parseLong;
 import static ru.leverx.pets.exception.ExceptionMessages.WRONG_PATH_MESSAGE;
 import static ru.leverx.pets.parser.UrlParser.parseUrl;
-import static ru.leverx.pets.utils.HTTPUtils.*;
+import static ru.leverx.pets.servlet.ServletNames.PERSON_SERVLET_NAME;
+import static ru.leverx.pets.servlet.ServletNames.PERSON_SERVLET_VALUE;
+import static ru.leverx.pets.utils.HTTPUtils.getRequestBodyData;
+import static ru.leverx.pets.utils.HTTPUtils.sendResponse;
+import static ru.leverx.pets.utils.HTTPUtils.sendResponseError;
+import static ru.leverx.pets.utils.HTTPUtils.toJSON;
+import static ru.leverx.pets.validator.DataValidator.validateData;
 
-@WebServlet(name = "PersonServlet", value = "/person/*")
+@WebServlet(name = PERSON_SERVLET_NAME, value = PERSON_SERVLET_VALUE)
 public class PersonServlet extends HttpServlet {
 
     private PersonService personService;
@@ -35,10 +41,11 @@ public class PersonServlet extends HttpServlet {
         List<String> parsedUrl = parseUrl(request);
 
         if (parsedUrl.get(0).equals(UrlCase.ID.toString())) {
-            String personByIdJSON = makeJSON(personService.getPersonById(parseLong(parsedUrl.get(1))));
+            PersonResponseDto personById = personService.getPersonById(parseLong(parsedUrl.get(1)));
+            String personByIdJSON = toJSON(personById);
             sendResponse(response, personByIdJSON);
         } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {
-            String allPersonJSON = makeJSON(personService.getAllPerson());
+            String allPersonJSON = toJSON(personService.getAllPerson());
             sendResponse(response, allPersonJSON);
         }
     }
@@ -52,9 +59,9 @@ public class PersonServlet extends HttpServlet {
                 obj.getString("firstName"),
                 obj.getString("lastName")
         );
-        DataValidator.validateData(personRequestDto);
+        validateData(personRequestDto);
 
-        String addedPersonJSON = makeJSON(personService.addPerson(personRequestDto));
+        String addedPersonJSON = toJSON(personService.addPerson(personRequestDto));
 
         sendResponse(response, addedPersonJSON);
     }
@@ -84,12 +91,12 @@ public class PersonServlet extends HttpServlet {
                     obj.getString("firstName"),
                     obj.getString("lastName")
             );
-            DataValidator.validateData(personRequestDto);
+            validateData(personRequestDto);
 
-            String updatedPersonJSON = makeJSON(personService.updatePerson(parseLong(parsedUrl.get(1)), personRequestDto));
+            String updatedPersonJSON = toJSON(personService.updatePerson(parseLong(parsedUrl.get(1)), personRequestDto));
 
             sendResponse(response, updatedPersonJSON);
-        } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {
+        } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {   // поменять местами
             sendResponseError(response, 400, WRONG_PATH_MESSAGE);
         }
     }

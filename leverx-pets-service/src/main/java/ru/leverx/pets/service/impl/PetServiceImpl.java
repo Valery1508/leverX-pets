@@ -2,6 +2,7 @@ package ru.leverx.pets.service.impl;
 
 import ru.leverx.pets.dao.PetDao;
 import ru.leverx.pets.dto.PetDto;
+import ru.leverx.pets.entity.Person;
 import ru.leverx.pets.entity.Pet;
 import ru.leverx.pets.exception.EntityNotFoundException;
 import ru.leverx.pets.mapper.PetMapper;
@@ -40,16 +41,16 @@ public class PetServiceImpl implements PetService {
         if (checkPetExistence(id)) {
             petDao.deletePetById(id);
         } else {
-            throw new EntityNotFoundException(id);
+            throw new EntityNotFoundException(Pet.class.getName(), id);
         }
     }
 
     @Override
     public PetDto updatePet(long id, PetDto petDto) {
         if (!checkPetExistence(id)) {
-            throw new EntityNotFoundException(id);
+            throw new EntityNotFoundException(Pet.class.getName(), id);
         } else if (!personService.checkPersonExistence(petDto.getPersonId())) {
-            throw new EntityNotFoundException(petDto.getPersonId());
+            throw new EntityNotFoundException(Person.class.getName(), petDto.getPersonId());
         }
         petDto.setId(id);
         Pet pet = petMapper.toEntity(petDto);
@@ -60,7 +61,7 @@ public class PetServiceImpl implements PetService {
     @Override
     public PetDto addPet(PetDto petDto) {
         if (!personService.checkPersonExistence(petDto.getPersonId())) {
-            throw new EntityNotFoundException(petDto.getPersonId());
+            throw new EntityNotFoundException(Person.class.getName(), petDto.getPersonId());
         }
         Pet pet = petMapper.toEntity(petDto);
         petDao.savePet(pet);

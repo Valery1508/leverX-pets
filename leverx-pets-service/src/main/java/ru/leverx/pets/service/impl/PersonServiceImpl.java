@@ -43,7 +43,7 @@ public class PersonServiceImpl implements PersonService {
         if (checkPersonExistence(id)) {
             personDao.deletePersonById(id);
         } else {
-            throw new EntityNotFoundException(id);
+            throw new EntityNotFoundException(Person.class.getName(), id);
         }
     }
 
@@ -57,7 +57,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonResponseDto updatePerson(long id, PersonRequestDto personRequestDto) {
         if (!checkPersonExistence(id)) {
-            throw new EntityNotFoundException(id);
+            throw new EntityNotFoundException(Person.class.getName(), id);
         }
         personRequestDto.setId(id);
         Person person = personMapper.toEntity(personRequestDto);

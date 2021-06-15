@@ -6,7 +6,6 @@ import ru.leverx.pets.entity.Pet;
 import ru.leverx.pets.entity.PetType;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 

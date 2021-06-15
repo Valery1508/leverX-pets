@@ -4,7 +4,6 @@ import org.json.JSONObject;
 import ru.leverx.pets.dto.PetDto;
 import ru.leverx.pets.parser.UrlCase;
 import ru.leverx.pets.service.PetService;
-import ru.leverx.pets.validator.DataValidator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -18,9 +17,15 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static ru.leverx.pets.exception.ExceptionMessages.WRONG_PATH_MESSAGE;
 import static ru.leverx.pets.parser.UrlParser.parseUrl;
-import static ru.leverx.pets.utils.HTTPUtils.*;
+import static ru.leverx.pets.servlet.ServletNames.PET_SERVLET_NAME;
+import static ru.leverx.pets.servlet.ServletNames.PET_SERVLET_VALUE;
+import static ru.leverx.pets.utils.HTTPUtils.getRequestBodyData;
+import static ru.leverx.pets.utils.HTTPUtils.sendResponse;
+import static ru.leverx.pets.utils.HTTPUtils.sendResponseError;
+import static ru.leverx.pets.utils.HTTPUtils.toJSON;
+import static ru.leverx.pets.validator.DataValidator.validateData;
 
-@WebServlet(name = "PetServlet", value = "/pets/*")
+@WebServlet(name = PET_SERVLET_NAME, value = PET_SERVLET_VALUE)
 public class PetServlet extends HttpServlet {
 
     private PetService petService;
@@ -36,10 +41,10 @@ public class PetServlet extends HttpServlet {
         List<String> parsedUrl = parseUrl(request);
 
         if (parsedUrl.get(0).equals(UrlCase.ID.toString())) {
-            String petByIdJSON = makeJSON(petService.getPetById(parseInt(parsedUrl.get(1))));
+            String petByIdJSON = toJSON(petService.getPetById(parseInt(parsedUrl.get(1))));
             sendResponse(response, petByIdJSON);
         } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {
-            String allPetsJSON = makeJSON(petService.getAllPets());
+            String allPetsJSON = toJSON(petService.getAllPets());
             sendResponse(response, allPetsJSON);
         }
     }
@@ -67,9 +72,9 @@ public class PetServlet extends HttpServlet {
                 obj.getString("type"),
                 obj.getLong("personId")
         );
-        DataValidator.validateData(petDto);
+        validateData(petDto);
 
-        String addedPetJSON = makeJSON(petService.addPet(petDto));
+        String addedPetJSON = toJSON(petService.addPet(petDto));
 
         sendResponse(response, addedPetJSON);
     }
@@ -87,9 +92,9 @@ public class PetServlet extends HttpServlet {
                     obj.getString("type"),
                     obj.getLong("personId")
             );
-            DataValidator.validateData(petDto);
+            validateData(petDto);
 
-            String updatedPetJSON = makeJSON(petService.updatePet(parseLong(parsedUrl.get(1)), petDto));
+            String updatedPetJSON = toJSON(petService.updatePet(parseLong(parsedUrl.get(1)), petDto));
 
             sendResponse(response, updatedPetJSON);
         } else if (parsedUrl.get(0).equals(UrlCase.ALL.toString())) {

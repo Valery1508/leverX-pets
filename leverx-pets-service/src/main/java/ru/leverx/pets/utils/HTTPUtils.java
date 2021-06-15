@@ -27,7 +27,7 @@ public class HTTPUtils {
         response.sendError(errorCode, errorMessage);
     }
 
-    public static String makeJSON(Object value) throws JsonProcessingException {
+    public static String toJSON(Object value) throws JsonProcessingException {
         return writer
                 .writeValueAsString(value);
     }
