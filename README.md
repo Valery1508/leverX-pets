@@ -13,6 +13,3 @@
 - one owner may have many pets
 - schema:
 ![image](https://user-images.githubusercontent.com/58391822/119480600-828e4400-bd5a-11eb-9b82-3a1f5f82d4ed.png)
-
-# Pay attention:
-Fill in fields "db.user" and "db.password" in application.properties file with your data.
